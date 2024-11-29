@@ -76,6 +76,7 @@ import { MurmurHash3_64 } from "../shared/murmurhash3.js";
 import { OperatorList } from "./operator_list.js";
 import { PDFImage } from "./image.js";
 import { Stream } from "./stream.js";
+import { GlyphDimension } from "./glyphDimension.js"
 
 const DefaultPartialEvaluatorOptions = Object.freeze({
   maxImageSize: -1,
@@ -2378,6 +2379,7 @@ class PartialEvaluator {
       transform: null,
       fontName: null,
       hasEOL: false,
+      glyphDimensions: [],
     };
 
     // Use a circular buffer (length === 2) to save the last chars in the
@@ -2487,6 +2489,20 @@ class PartialEvaluator {
         fontName,
         hasEOL: false,
       });
+
+      let textContentItem = textContent.items[textContent.items.length - 1]
+      if (!textContentItem.glyphDimensions)
+        textContentItem.glyphDimensions = [];
+
+
+      let glyphDimension = new GlyphDimension(" ",
+        width,
+        height,
+        0,
+        0,
+        transform,
+        false);
+        textContentItem.glyphDimensions.push(glyphDimension);      
     }
 
     function getCurrentTextTransform() {
@@ -2617,6 +2633,7 @@ class PartialEvaluator {
         transform: textChunk.transform,
         fontName: textChunk.fontName,
         hasEOL: textChunk.hasEOL,
+        glyphDimensions: textChunk.glyphDimensions,
       };
     }
 
@@ -2974,6 +2991,25 @@ class PartialEvaluator {
             textState.translateTextMatrix(0, -charSpacing);
           }
         }
+
+
+       let glyphDimension = new GlyphDimension(glyphUnicode,
+                           scaledDim * textChunk.textAdvanceScale,
+                           textChunk.prevTransform[0] + Math.abs(font.descent * textState.fontSize) + font.ascent,
+                           (textChunk.width - scaledDim) * textChunk.textAdvanceScale,
+                           textChunk.prevTransform[5] - (Math.abs(font.descent * textState.fontSize) + font.ascent),
+                           textChunk.transform,
+                           false);
+        textChunk.glyphDimensions.push(glyphDimension);
+       
+        if (glyph.unicode.length > 1)
+        {
+          for(let i = 0; i < glyph.unicode.length - 1;i++)
+          {
+            let placeholderDimesion = new GlyphDimension(glyphUnicode, -1,-1,-1,-1,textChunk.transform, true);
+            textChunk.glyphDimensions.push(placeholderDimesion);
+          }
+        }
       }
     }
 
@@ -2992,6 +3028,7 @@ class PartialEvaluator {
           fontName: textState.loadedName,
           hasEOL: true,
         });
+
       }
     }
 
@@ -3003,6 +3040,16 @@ class PartialEvaluator {
         if (textContentItem.initialized) {
           resetLastChars();
           textContentItem.str.push(" ");
+
+          let glyphDimension = new GlyphDimension(" ",
+            width * textContentItem.textAdvanceScale,
+            textContentItem.transform[0] + Math.abs(textState.font.descent * textState.fontSize) + textState.font.ascent,
+            (textContentItem.width) * textContentItem.textAdvanceScale,
+            textContentItem.transform[5] - (Math.abs(textState.font.descent * textState.fontSize) + textState.font.ascent),
+            textContentItem.transform,
+            false);
+          
+            textContentItem.glyphDimensions.push(glyphDimension);
         }
         return false;
       }
@@ -3044,6 +3091,7 @@ class PartialEvaluator {
       textContent.items.push(runBidiTransform(textContentItem));
       textContentItem.initialized = false;
       textContentItem.str.length = 0;
+      textContentItem.glyphDimensions = [];
     }
 
     function enqueueChunk(batch = false) {
