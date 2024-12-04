@@ -23,8 +23,7 @@ class GlyphDimension {
     this.IsPlaceHolder = isPlaceHolder;
   }
 
-  static evaluatorPushWhiteSpacesHook(textContent, width, height, transform)
-  {
+  static evaluatorPushWhiteSpacesHook(textContent, width, height, transform) {
     const currentTextContentItem = textContent.items.at(-1);
     if (!currentTextContentItem.glyphDimensions) {
       currentTextContentItem.glyphDimensions = [];
@@ -43,8 +42,14 @@ class GlyphDimension {
     currentTextContentItem.glyphDimensions.push(glyphDimension);
   }
 
-  static evaluatorBuildTextContentItemHook(glyphUnicode, scaledDim, textChunk, font, textState, glyph)
-  {
+  static evaluatorBuildTextContentItemHook(
+    glyphUnicode,
+    scaledDim,
+    textChunk,
+    font,
+    textState,
+    glyph
+  ) {
     const glyphDimension = new GlyphDimension(
       glyphUnicode,
       scaledDim * textChunk.textAdvanceScale,
@@ -75,8 +80,7 @@ class GlyphDimension {
     }
   }
 
-  static evaluatorAddFakeSpacesHook(width, textContentItem, textState)
-  {
+  static evaluatorAddFakeSpacesHook(width, textContentItem, textState) {
     const glyphDimension = new GlyphDimension(
       " ",
       width * textContentItem.textAdvanceScale,

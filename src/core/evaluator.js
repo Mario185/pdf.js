@@ -2490,7 +2490,12 @@ class PartialEvaluator {
         hasEOL: false,
       });
 
-      GlyphDimension.evaluatorPushWhiteSpacesHook(textContent, width, height, transform);
+      GlyphDimension.evaluatorPushWhiteSpacesHook(
+        textContent,
+        width,
+        height,
+        transform
+      );
     }
 
     function getCurrentTextTransform() {
@@ -2980,7 +2985,14 @@ class PartialEvaluator {
           }
         }
 
-        GlyphDimension.evaluatorBuildTextContentItemHook(glyphUnicode, scaledDim, textChunk, font, textState, glyph);
+        GlyphDimension.evaluatorBuildTextContentItemHook(
+          glyphUnicode,
+          scaledDim,
+          textChunk,
+          font,
+          textState,
+          glyph
+        );
       }
     }
 
@@ -3011,7 +3023,11 @@ class PartialEvaluator {
           resetLastChars();
           textContentItem.str.push(" ");
 
-          GlyphDimension.evaluatorAddFakeSpacesHook(width, textContentItem, textState);
+          GlyphDimension.evaluatorAddFakeSpacesHook(
+            width,
+            textContentItem,
+            textState
+          );
         }
         return false;
       }
