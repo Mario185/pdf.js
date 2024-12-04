@@ -2490,22 +2490,7 @@ class PartialEvaluator {
         hasEOL: false,
       });
 
-      const currentTextContentItem = textContent.items.at(-1);
-      if (!currentTextContentItem.glyphDimensions) {
-        currentTextContentItem.glyphDimensions = [];
-      }
-
-      const glyphDimension = new GlyphDimension(
-        " ",
-        width,
-        height,
-        0,
-        0,
-        transform,
-        false
-      );
-
-      currentTextContentItem.glyphDimensions.push(glyphDimension);
+      GlyphDimension.evaluatorPushWhiteSpacesHook(textContent, width, height, transform);
     }
 
     function getCurrentTextTransform() {
@@ -2995,34 +2980,7 @@ class PartialEvaluator {
           }
         }
 
-        const glyphDimension = new GlyphDimension(
-          glyphUnicode,
-          scaledDim * textChunk.textAdvanceScale,
-          textChunk.prevTransform[0] +
-            Math.abs(font.descent * textState.fontSize) +
-            font.ascent,
-          (textChunk.width - scaledDim) * textChunk.textAdvanceScale,
-          textChunk.prevTransform[5] -
-            (Math.abs(font.descent * textState.fontSize) + font.ascent),
-          textChunk.transform,
-          false
-        );
-        textChunk.glyphDimensions.push(glyphDimension);
-
-        if (glyph.unicode.length > 1) {
-          for (let idx = 0; idx < glyph.unicode.length - 1; idx++) {
-            const placeholderDimesion = new GlyphDimension(
-              glyphUnicode,
-              -1,
-              -1,
-              -1,
-              -1,
-              textChunk.transform,
-              true
-            );
-            textChunk.glyphDimensions.push(placeholderDimesion);
-          }
-        }
+        GlyphDimension.evaluatorBuildTextContentItemHook(glyphUnicode, scaledDim, textChunk, font, textState, glyph);
       }
     }
 
@@ -3053,21 +3011,7 @@ class PartialEvaluator {
           resetLastChars();
           textContentItem.str.push(" ");
 
-          const glyphDimension = new GlyphDimension(
-            " ",
-            width * textContentItem.textAdvanceScale,
-            textContentItem.transform[0] +
-              Math.abs(textState.font.descent * textState.fontSize) +
-              textState.font.ascent,
-            textContentItem.width * textContentItem.textAdvanceScale,
-            textContentItem.transform[5] -
-              (Math.abs(textState.font.descent * textState.fontSize) +
-                textState.font.ascent),
-            textContentItem.transform,
-            false
-          );
-
-          textContentItem.glyphDimensions.push(glyphDimension);
+          GlyphDimension.evaluatorAddFakeSpacesHook(width, textContentItem, textState);
         }
         return false;
       }
