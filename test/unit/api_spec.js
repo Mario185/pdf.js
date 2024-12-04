@@ -3381,7 +3381,9 @@ page 1 / 3`);
         transform: [18, 0, 0, 18, 441.81, 708.4499999999999],
         width: 77.49,
         hasEOL: false,
+        glyphDimensions: items[0].glyphDimensions,
       });
+
       expect(styles[fontName]).toEqual({
         fontFamily: "serif",
         // `useSystemFonts` has a different value in web environments
