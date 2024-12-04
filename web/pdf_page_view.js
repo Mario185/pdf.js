@@ -306,6 +306,15 @@ class PDFPageView {
     }
   }
 
+  get annotationMode(){
+    return this.#annotationMode;
+  }
+
+  set annotationMode(val)
+  {
+    this.#annotationMode = val;
+  }
+  
   #setDimensions() {
     const { viewport } = this;
     if (this.pdfPage) {

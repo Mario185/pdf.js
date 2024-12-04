@@ -429,6 +429,15 @@ class PDFViewer {
     }
   }
 
+  get annotationMode(){
+    return this.#annotationMode;
+  }
+
+  set annotationMode(val)
+  {
+    this.#annotationMode = val;
+  }
+
   /**
    * @returns {boolean} Whether the pageNumber is valid (within bounds).
    * @private
