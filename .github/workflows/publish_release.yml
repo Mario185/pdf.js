@@ -36,7 +36,7 @@ jobs:
       - name: action-zip
         uses: montudor/action-zip@v1.0.0
         with:
-          args: zip -qq -r dist.zip ./build/dist
+          args: zip -qq -r dist_${{github.event.release.tag_name}}.zip ./build/dist
 
       - name: publish to release page
         uses: softprops/action-gh-release@v2
