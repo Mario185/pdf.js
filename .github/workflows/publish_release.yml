@@ -33,7 +33,17 @@ jobs:
       - name: Build the `pdfjs-dist` library
         run: npx gulp dist
 
-      - name: Publish the `pdfjs-dist` library to NPM
-        run: npm publish ./build/dist --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: action-zip
+        uses: montudor/action-zip@v1.0.0
+        with:
+          args: zip -qq -r dist.zip ./build/dist
+
+      - name: publish to release page
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist.zip
+          
+      #- name: Publish the `pdfjs-dist` library to NPM
+      #  run: npm publish ./build/dist --provenance
+      #  env:
+      #    NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
