@@ -41,7 +41,7 @@ jobs:
       - name: publish to release page
         uses: softprops/action-gh-release@v2
         with:
-          files: dist.zip
+          files: dist_${{github.event.release.tag_name}}.zip
           
       #- name: Publish the `pdfjs-dist` library to NPM
       #  run: npm publish ./build/dist --provenance
